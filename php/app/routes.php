@@ -1608,16 +1608,16 @@ final class Handler
     public function postIsuCondition(Request $request, Response $response, array $args): Response
     {
         tideways_xhprof_enable();
-        register_shutdown_function("__xhprof_save");
         // TODO: 一定割合リクエストを落としてしのぐようにしたが、本来は全量さばけるようにすべき
         $dropProbability = 0.9;
 
         if ((rand() / getrandmax()) <= $dropProbability) {
-            $this->logger->warning('drop post isu condition request');
+            // $this->logger->warning('drop post isu condition request');
 
             return $response->withStatus(StatusCodeInterface::STATUS_ACCEPTED);
         }
 
+        register_shutdown_function("__xhprof_save");
         $jiaIsuUuid = $args['jia_isu_uuid'];
         if ($jiaIsuUuid === '') {
             $response->getBody()->write('missing: jia_isu_uuid');

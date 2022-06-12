@@ -1606,7 +1606,7 @@ final class Handler
      */
     public function postIsuCondition(Request $request, Response $response, array $args): Response
     {
-        xhprof_enable();
+        tideways_xhprof_enable();
         register_shutdown_function('__xhprof_save');
         // TODO: 一定割合リクエストを落としてしのぐようにしたが、本来は全量さばけるようにすべき
         $dropProbability = 0.9;

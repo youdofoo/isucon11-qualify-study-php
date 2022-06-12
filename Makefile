@@ -26,7 +26,7 @@ slow:
 
 .PHONY: deploy-php
 deploy-php:
-	sudo systemctl restart isucondition.go.service
+	sudo systemctl restart isucondition.php.service
 
 .PHONY: deploy-nginx
 deploy-nginx:

@@ -24,9 +24,18 @@ pt:
 slow:
 	sudo mysqldumpslow -s t | head -n 20
 
-.PHONY: deploy
+.PHONY: deploy-php
 deploy:
-	cd go && go build -o isucondition main.go && sudo systemctl restart isucondition.go.service
+	sudo systemctl restart isucondition.go.service
+
+.PHONY: deploy-nginx
+	sudo cp nginx/nginx.conf /etc/nginx/nginx.conf && \
+	sudo cp nginx/sites-available/isucondition-php.conf /etc/nginx/sites-available && \
+	sudo systemctl restart nginx
+
+.PHONY: deploy-mysql
+	sudo cp mysql/50-server.cnf /etc/mysql/mariadb.conf.d/ && \
+	sudo systemctl restart mysql
 
 .PHONY: reset-log
 reset-log:

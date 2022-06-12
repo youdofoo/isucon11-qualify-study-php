@@ -1679,7 +1679,7 @@ final class Handler
             $stmt = $this->dbh->prepare(
                 'INSERT INTO `isu_condition`' .
                 '	(`jia_isu_uuid`, `timestamp`, `is_sitting`, `condition`, `message`)' .
-                '	VALUES ' . implode($placeholders, ',');
+                '	VALUES ' . implode($placeholders, ',')
             );
             $stmt->execute($values);
         } catch (PDOException $e) {

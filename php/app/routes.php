@@ -1019,7 +1019,7 @@ final class Handler
 
         $response->getBody()->write($rows[0]['image']);
 
-        return $response->withHeader('Cache-Control', 'max-age=86400');
+        return $response->withHeader('Cache-Control', 'maxage=86400');
     }
 
     /**

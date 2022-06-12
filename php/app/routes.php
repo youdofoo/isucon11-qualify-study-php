@@ -1593,12 +1593,21 @@ final class Handler
         return $this->jsonResponse($response, $res);
     }
 
+    function __xhprof_save() {
+        file_put_contents(
+            sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid() . '.myapplication.xhprof',
+            serialize(tideways_xhprof_disable())
+        );
+    }
+
     /**
      * POST /api/condition/:jia_isu_uuid
      * ISUからのコンディションを受け取る
      */
     public function postIsuCondition(Request $request, Response $response, array $args): Response
     {
+        xhprof_enable();
+        register_shutdown_function('__xhprof_save');
         // TODO: 一定割合リクエストを落としてしのぐようにしたが、本来は全量さばけるようにすべき
         $dropProbability = 0.9;
 

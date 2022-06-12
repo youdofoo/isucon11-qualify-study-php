@@ -1633,21 +1633,17 @@ final class Handler
                 ->withHeader('Content-Type', 'text/plain; charset=UTF-8');
         }
 
-        $this->dbh->beginTransaction();
-
         try {
             $stmt = $this->dbh->prepare('SELECT COUNT(*) FROM `isu` WHERE `jia_isu_uuid` = ?');
             $stmt->execute([$jiaIsuUuid]);
             $count = $stmt->fetch()[0];
         } catch (PDOException $e) {
-            $this->dbh->rollBack();
             $this->logger->error('db error: ' . $e->errorInfo[2]);
 
             return $response->withStatus(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
         }
 
         if ($count == 0) {
-            $this->dbh->rollBack();
             $response->getBody()->write('not found: isu');
 
             return $response->withStatus(StatusCodeInterface::STATUS_NOT_FOUND)
@@ -1658,7 +1654,6 @@ final class Handler
         $values = [];
         foreach ($req as $cond) {
             if (!$this->isValidConditionFormat($cond->condition)) {
-                $this->dbh->rollBack();
                 $response->getBody()->write('bad request body');
 
                 return $response->withStatus(StatusCodeInterface::STATUS_BAD_REQUEST)
@@ -1683,13 +1678,11 @@ final class Handler
             );
             $stmt->execute($values);
         } catch (PDOException $e) {
-            $this->dbh->rollBack();
             $this->logger->error('db error: ' . $e->errorInfo[2]);
 
             return $response->withStatus(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
         }
 
-        $this->dbh->commit();
 
         return $response->withStatus(StatusCodeInterface::STATUS_ACCEPTED);
     }

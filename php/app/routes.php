@@ -13,6 +13,14 @@ use Psr\Log\LoggerInterface;
 use Slim\App;
 use SlimSession\Helper as SessionHelper;
 
+
+function __xhprof_save() {
+    file_put_contents(
+        sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid() . '.myapplication.xhprof',
+        serialize(tideways_xhprof_disable())
+    );
+}
+
 final class Isu implements JsonSerializable
 {
     public function __construct(
@@ -1600,7 +1608,7 @@ final class Handler
     public function postIsuCondition(Request $request, Response $response, array $args): Response
     {
         tideways_xhprof_enable();
-        register_shutdown_function('__xhprof_save');
+        register_shutdown_function("__xhprof_save");
         // TODO: 一定割合リクエストを落としてしのぐようにしたが、本来は全量さばけるようにすべき
         $dropProbability = 0.9;
 
@@ -1768,11 +1776,4 @@ final class Handler
         return $response->withStatus($statusCode)
             ->withHeader('Content-Type', 'application/json; charset=UTF-8');
     }
-}
-
-function __xhprof_save() {
-    file_put_contents(
-        sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid() . '.myapplication.xhprof',
-        serialize(tideways_xhprof_disable())
-    );
 }
